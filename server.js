@@ -6,17 +6,10 @@ const app = express()
 const PORT = process.env.PORT 
 || 3001; 
 
-const notesdb = require('./db/db.json');
-
-
-
-app.get("/", function(req,res){
-    res.sendFile(path.join());
-})
-
-app.get("/", function(req,res){
-    res.sendFile(path.join());
-})
+const testdb = require('./db/db.json');
+app.use(express.json());
+app.use(express.static('public'));
+app.use(express.urlencoded({extended: true}));
 
 app.get("/", function(req,res){
     res.sendFile(path.join());
@@ -29,6 +22,6 @@ app.delete("/", function(req,res){
     res.sendFile(path.join());
 })
 
-app.delete("/", function(req,res){
-    res.sendFile(path.join());
+app.listen(PORT,() => {
+    console.log(`App listening on http://localhost:" + ${PORT}`);
 })

@@ -6,9 +6,9 @@ The Note Taker is an application with the sole purpose to write and save notes. 
 ## Installation
 The application requires:
 1. Inquirer package version 8.2.4
-Please run '''npm install''' inside the terminal. 
+Please run ```npm install``` inside the terminal. 
 2. Node.js version 16
-Please run '''node server.js''' in the terminal.
+Please run ```node server.js``` in the terminal.
 3. Express version 4.16.4
 
 ## Usage
