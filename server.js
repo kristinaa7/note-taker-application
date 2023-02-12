@@ -11,23 +11,25 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use(express.urlencoded({extended: true}));
 
-//get request for notes
-app.get('/', (req,res){
+
+//GET request for notes
+app.get('/api/notes', (req,res) => {
     res.sendFile(path.join(__dirname, '/public/index.html'));
+    res.json(`${req.method} request received`);
+    return res.json(notes);
 });
 
-app.get('/api/notes', (req,res) => res.json());
+// POST request
+app.post('/api/notes', (req,res) => {
+    res.json(`${req.method} request received`);
+    let response;
+});
 
-
-// post request
-app.post("/", function(req,res){
-})
-
-//delete request
-app.delete("/", function(req,res){
+//DELETE request
+app.delete("/", (req,res) => {
     res.sendFile(path.join());
 })
 
 app.listen(PORT,() => {
-    console.log(`App listening on http://localhost:" + ${PORT}`);
+    console.log(`App listening on http://localhost:${PORT}`);
 })
