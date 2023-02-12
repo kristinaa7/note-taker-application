@@ -27,8 +27,28 @@ app.post('/api/notes', (req,res) => {
     console.info(`${req.method} request received to add a review`);
 });
 
+// Destructuring assignment for the items in req.body
+const { title, text, id } = req.body;
 
+  // If all the required properties are present
+  if (title && text && id) {
+    // Variable for the object we will save
+    const newNote = {
+      title,
+      text,
+      id,
+    };
 
+//Obtain exisiting notes
+fs.readFile('./db/db.json', 'utf8',  (err, data) => {
+    if (err) {
+    console.error(err);
+    } else {    
+    //Convert string into JSON object
+    const parsedNotes = JSON.parse(data);
+    // Add a new review
+    parsedNote.push(newNote);
+}})};
 
 //DELETE request
 app.delete("/", (req,res) => {
