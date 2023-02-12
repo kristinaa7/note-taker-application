@@ -11,19 +11,24 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use(express.urlencoded({extended: true}));
 
+app.get('/', (req, res) =>
+  res.sendFile(path.join(__dirname, '/public/index.html'))
+);
 
 //GET request for notes
 app.get('/api/notes', (req,res) => {
-    res.sendFile(path.join(__dirname, '/public/index.html'));
-    res.json(`${req.method} request received`);
-    return res.json(notes);
+    res.status(200).json(`${req.method} request received`);
+    console.info(`${req.method} request received to get reviews`);
 });
 
 // POST request
 app.post('/api/notes', (req,res) => {
     res.json(`${req.method} request received`);
-    let response;
+    console.info(`${req.method} request received to add a review`);
 });
+
+
+
 
 //DELETE request
 app.delete("/", (req,res) => {
