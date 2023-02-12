@@ -48,12 +48,25 @@ fs.readFile('./db/db.json', 'utf8',  (err, data) => {
     const parsedNotes = JSON.parse(data);
     // Add a new review
     parsedNote.push(newNote);
-}})};
 
-//DELETE request
-app.delete("/", (req,res) => {
-    res.sendFile(path.join());
-})
+ // Write updated reviews back to the file
+ fs.writeFile('./db/db.json',JSON.stringify(parsedNotes, null, 4),
+    (writeErr) => writeErr
+        ? console.error(writeErr)
+        : console.info('Successfully updated notes!')
+    );
+    }
+})};
+
+const response = {
+    status: 'success',
+    body: newNote,
+  };
+
+// DELETE request
+// app.delete("/", (req,res) => {
+//     res.sendFile(path.join());
+// })
 
 app.listen(PORT,() => {
     console.log(`App listening on http://localhost:${PORT}`);
