@@ -4,70 +4,66 @@ const path = require('path')
 const fs = require('fs')
 const notes = require('./db/db.json');
 const app = express()
-const PORT = process.env.PORT || 3001; 
+const PORT = process.env.PORT || 3001;
 
 //Middleware to set up the Express app to handle data parsing
 app.use(express.json());
 app.use(express.static('public'));
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) =>
-  res.sendFile(path.join(__dirname, '/public/index.html'))
+    res.sendFile(path.join(__dirname, '/public/index.html'))
+);
+
+app.get('/notes', (req, res) =>
+    res.sendFile(path.join(__dirname, '/public/notes.html'))
 );
 
 //GET request for notes
-app.get('/api/notes', (req,res) => {
-    res.status(200).json(`${req.method} request received`);
-    console.info(`${req.method} request received to get reviews`);
+app.get('/api/notes', (req, res) => {
+    //Obtain exisiting notes
+    fs.readFile('./db/db.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+        } else {
+            //Convert string into JSON object
+            const parsedNotes = JSON.parse(data);
+            //frontend
+            res.status(200).json(parsedNotes);
+            //backend
+            console.info(`${req.method} request received to get notes`);
+        }
+    })
 });
 
-// POST request
-app.post('/api/notes', (req,res) => {
-    res.json(`${req.method} request received`);
-    console.info(`${req.method} request received to add a review`);
+// POST request using the route api/notes
+app.post('/api/notes', (req, res) => {
+    fs.readFile('./db/db.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+        } else {
+            const parsedNotes = JSON.parse(data);
+
+            //parsedNotes is the old notes
+            const newNote = req.body;
+            //adding new notes to the old notes(parsednotes)
+            parsedNotes.push(newNote);
+            fs.writeFile('./db/db.json', JSON.stringify(parsedNotes), (err) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    res.json(newNote);
+                }
+            })
+        }
+    })
 });
 
-// Destructuring assignment for the items in req.body
-const { title, text, id } = req.body;
-
-  // If all the required properties are present
-  if (title && text && id) {
-    // Variable for the object we will save
-    const newNote = {
-      title,
-      text,
-      id,
-    };
-
-//Obtain exisiting notes
-fs.readFile('./db/db.json', 'utf8',  (err, data) => {
-    if (err) {
-    console.error(err);
-    } else {    
-    //Convert string into JSON object
-    const parsedNotes = JSON.parse(data);
-    // Add a new review
-    parsedNote.push(newNote);
-
- // Write updated reviews back to the file
- fs.writeFile('./db/db.json',JSON.stringify(parsedNotes, null, 4),
-    (writeErr) => writeErr
-        ? console.error(writeErr)
-        : console.info('Successfully updated notes!')
-    );
-    }
-})};
-
-const response = {
-    status: 'success',
-    body: newNote,
-  };
-
-// DELETE request
-// app.delete("/", (req,res) => {
-//     res.sendFile(path.join());
-// })
+// // DELETE request
+// // app.delete("/", (req,res) => {
+// //     res.sendFile(path.join());
+// // })
 
 app.listen(PORT,() => {
     console.log(`App listening on http://localhost:${PORT}`);
-})
+});
