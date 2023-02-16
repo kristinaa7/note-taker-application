@@ -11,16 +11,14 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 
+// GET Route for homepage
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'))
+    res.sendFile(path.join(__dirname, '/public/index.html'))
 });
 
+// GET Route for notes page
 app.get('/notes', (req, res) => {
-    res.sendFile(path.join(__dirname, '/..public/notes.html'))
-});
-
-router.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
+    res.sendFile(path.join(__dirname, '/public/notes.html'))
 });
 
 //GET request for notes
@@ -72,5 +70,5 @@ app.delete ("/api/notes/:id", (req,res) => {
 });
 
 app.listen(PORT,() => {
-    console.log(`App listening on http://localhost:${PORT}`);
+    console.log(`App listening on http://localhost:${PORT} 🚀`);
 });
