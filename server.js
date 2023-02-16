@@ -43,26 +43,30 @@ app.post('/api/notes', (req, res) => {
             console.error(err);
         } else {
             const parsedNotes = JSON.parse(data);
-
             //parsedNotes is the old notes
             const newNote = req.body;
             //adding new notes to the old notes(parsednotes)
             parsedNotes.push(newNote);
-            fs.writeFile('./db/db.json', JSON.stringify(parsedNotes), (err) => {
-                if (err) {
-                    console.error(err);
-                } else {
-                    res.json(newNote);
+    fs.writeFile('./db/db.json', JSON.stringify(parsedNotes), (err) => {
+        if (err) {
+            console.error(err);
+        } else {
+            res.json(newNote);
                 }
             })
         }
     })
 });
 
-// // DELETE request
-// // app.delete("/", (req,res) => {
-// //     res.sendFile(path.join());
-// // })
+// DELETE request
+app.delete ("/api/notes/:id", (req,res) => {
+    fs.readFile('./db/db.json', 'utf8', (err, data) => {
+    let parsedNotes = JSON.parse(data);
+    const notesId = parsedNotes.filter((note)=> note.id !==req.params.id)
+})
+
+    fs.writeFileSync(path.join(__dirname, './db/db.json'), JSON.stringify(parsedNotes))
+});
 
 app.listen(PORT,() => {
     console.log(`App listening on http://localhost:${PORT}`);
