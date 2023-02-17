@@ -2,7 +2,9 @@
 const express = require('express')
 const path = require('path')
 const fs = require('fs')
+//when I require db in an external, the data is parsed 
 const notes = require('./db/db.json');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 
@@ -24,58 +26,66 @@ app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/notes.html'))
 });
 
-app.get('*', (req, res) =>
-  res.sendFile(path.join(__dirname, '/public/index.html'))
-);
-
 //GET request for notes
 app.get('/api/notes', (req, res) => {
-    //Obtain exisiting notes
-    fs.readFile('./db/db.json', 'utf8', (err, data) => {
-        if (err) {
-            console.error(err);
-        } else {
-            //Convert string into JSON object
-            const parsedNotes = JSON.parse(data);
-            //frontend
-            res.status(200).json(parsedNotes);
-            //backend
-            console.info(`${req.method} request received to get notes`);
-        }
-    })
+    const saveNote = notes;
+    res.json(saveNote);
 });
+
+//Obtain exisiting notes from a real database (the parsed notes)
+// fs.readFile('./db/db.json', 'utf8', (err, data) => {
+// if (err) {
+//     console.error(err);
+// } else {
+//     //Convert string into JSON object
+//     const parsedNotes = JSON.parse(data);
+//     //frontend
+//     res.status(200).json(parsedNotes);
+//     //backend
+//     console.info(`${req.method} request received to get notes`);
+// }
+// })
 
 // POST request using the route api/notes
 app.post('/api/notes', (req, res) => {
+    // const saveNote = notes;
+    // const newNote = req.body;
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
         if (err) {
             console.error(err);
         } else {
             const parsedNotes = JSON.parse(data);
             //parsedNotes is the old notes
-            const newNote = req.body;
+            const newNote = {
+                title: req.body.title,
+                text: req.body.text,
+                id: uuidv4()
+            };
             //adding new notes to the old notes(parsednotes)
             parsedNotes.push(newNote);
-    fs.writeFile('./db/db.json', JSON.stringify(parsedNotes), (err) => {
-        if (err) {
-            console.error(err);
-        } else {
-            res.json(newNote);
+            fs.writeFile('./db/db.json', JSON.stringify(parsedNotes), (err) => {
+                if (err) {
+                    console.error(err);
+                    //     res.json(newNote);
                 }
+                res.json(newNote)
             })
         }
     })
 });
 
 // DELETE request
-app.delete ("/api/notes/:id", (req,res) => {
-    fs.readFile('./db/db.json', 'utf8', (err, data) => {
-    let parsedNotes = JSON.parse(data);
-    const notesId = parsedNotes.filter((note)=> note.id !==req.params.id)
-})
-    fs.writeFileSync(path.join(__dirname, './db/db.json'), JSON.stringify(parsedNotes))
+app.delete("/api/notes/:id", (req, res) => {
+    const saveNote = notes;
+    const notesId = saveNote.filter((note) => note.id !== req.params.id);
+    console.log(notesId);
+    fs.writeFileSync(path.join(__dirname, './db/db.json'), JSON.stringify(notesId));
 });
 
-app.listen(PORT,() => {
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '/public/index.html'))
+});
+
+app.listen(PORT, () => {
     console.log(`App listening on http://localhost:${PORT} 🚀`);
 });
