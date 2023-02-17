@@ -7,13 +7,11 @@ const notes = require('./db/db.json');
 const { v4: uuidv4 } = require('uuid');
 
 const app = express();
-
 const PORT = process.env.PORT || 3001;
 
 //Middleware to set up the Express app to handle data parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(express.static('public'));
 
 // GET Route for homepage
@@ -42,14 +40,11 @@ app.get('/api/notes', (req, res) => {
 //     //frontend
 //     res.status(200).json(parsedNotes);
 //     //backend
-//     console.info(`${req.method} request received to get notes`);
 // }
 // })
 
 // POST request using the route api/notes
 app.post('/api/notes', (req, res) => {
-    // const saveNote = notes;
-    // const newNote = req.body;
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
         if (err) {
             console.error(err);
@@ -63,12 +58,12 @@ app.post('/api/notes', (req, res) => {
             };
             //adding new notes to the old notes(parsednotes)
             parsedNotes.push(newNote);
-            fs.writeFile('./db/db.json', JSON.stringify(parsedNotes), (err) => {
+            fs.writeFile(path.join(__dirname,'./db/db.json'), JSON.stringify(parsedNotes), (err) => {
                 if (err) {
                     console.error(err);
                     //     res.json(newNote);
                 }
-                res.json(newNote)
+                res.status(200).json(newNote)
             })
         }
     })
@@ -80,6 +75,7 @@ app.delete("/api/notes/:id", (req, res) => {
     const notesId = saveNote.filter((note) => note.id !== req.params.id);
     console.log(notesId);
     fs.writeFileSync(path.join(__dirname, './db/db.json'), JSON.stringify(notesId));
+    res.json(notesId)
 });
 
 app.get('*', (req, res) => {
