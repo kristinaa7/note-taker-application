@@ -2,7 +2,7 @@
 const express = require('express')
 const path = require('path')
 const fs = require('fs')
-//when I require db in an external, the data is parsed 
+//data is parsed when we require the db.json file
 const notes = require('./db/db.json');
 const { v4: uuidv4 } = require('uuid');
 
@@ -30,19 +30,6 @@ app.get('/api/notes', (req, res) => {
     res.json(saveNote);
 });
 
-//Obtain exisiting notes from a real database (the parsed notes)
-// fs.readFile('./db/db.json', 'utf8', (err, data) => {
-// if (err) {
-//     console.error(err);
-// } else {
-//     //Convert string into JSON object
-//     const parsedNotes = JSON.parse(data);
-//     //frontend
-//     res.status(200).json(parsedNotes);
-//     //backend
-// }
-// })
-
 // POST request using the route api/notes
 app.post('/api/notes', (req, res) => {
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
@@ -61,7 +48,6 @@ app.post('/api/notes', (req, res) => {
             fs.writeFile(path.join(__dirname,'./db/db.json'), JSON.stringify(parsedNotes), (err) => {
                 if (err) {
                     console.error(err);
-                    //     res.json(newNote);
                 }
                 res.status(200).json(newNote)
             })
@@ -78,6 +64,7 @@ app.delete("/api/notes/:id", (req, res) => {
     res.json(notesId)
 });
 
+//wildcard
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/index.html'))
 });
